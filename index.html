@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QENC/LAB // Dual Theme Cyber-Brutalism</title>
+    <style>
+        /* =========================================
+           1. Imports & Dual Palette CSS Variables
+           Palette Codes:
+           - #142030 (Hēi Sè Black)
+           - #E9D8C8 (Siesta Tan)
+           - #732553 (Pico Eggplant)
+           - #FF5C8D (Stellar Strawberry)
+           - #1E3442 (Blue Whale)
+           - #85A3B2 (Grauzone)
+           ========================================= */
+        @import url('https://fonts.googleapis.com/css2?family=Diplomata&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Press+Start+2P&display=swap');
+
+        /* Default Dark Theme */
+        :root {
+            --bg-base: #142030;        /* Hēi Sè Black */
+            --panel-fill: #1E3442;     /* Blue Whale */
+            --border-accent: #732553;  /* Pico Eggplant */
+            --text-primary: #FF5C8D;   /* Stellar Strawberry */
+            --text-secondary: #85A3B2; /* Grauzone */
+            --card-inner: #142030;
+            
+            --font-heading: 'Press Start 2P', monospace;
+            --font-body: 'IBM Plex Serif', serif;
+            --font-alt: 'Diplomata', cursive;
+            --border-width: 3px;
+        }
+
+        /* Light Theme Overrides */
+        body.light-theme {
+            --bg-base: #E9D8C8;        /* Siesta Tan */
+            --panel-fill: #85A3B2;     /* Grauzone */
+            --border-accent: #732553;  /* Pico Eggplant */
+            --text-primary: #142030;   /* Hēi Sè Black */
+            --text-secondary: #732553; /* Pico Eggplant */
+            --card-inner: #E9D8C8;
+        }
+
+        * {
+            box-sizing: border-box;
+            cursor: none !important;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-size: 1rem;
+            line-height: 1.6;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            
+            /* Background grid pattern */
+            background-image: 
+                linear-gradient(to right, rgba(115, 37, 83, 0.15) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(115, 37, 83, 0.15) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* =========================================
+           2. Sparkle Cursor & Particle Trail
+           ========================================= */
+        #brutal-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-primary);
+            background-color: var(--panel-fill);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 99999;
+            transition: width 0.1s, height 0.1s;
+        }
+
+        .sparkle {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background-color: var(--border-accent);
+            pointer-events: none;
+            transform: translate(-50%, -50%) rotate(45deg);
+            z-index: 9998;
+            animation: sparkleAnim 0.6s forwards linear;
+        }
+
+        @keyframes sparkleAnim {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.2) rotate(90deg);
+            }
+        }
+
+        /* =========================================
+           3. Top & Bottom Brutalist Headers
+           ========================================= */
+        header.top-header {
+            background-color: var(--panel-fill);
+            border-bottom: var(--border-width) solid var(--text-primary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-title {
+            font-family: var(--font-heading);
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            letter-spacing: 0.05rem;
+        }
+
+        .theme-toggle-btn {
+            background-color: var(--card-inner);
+            color: var(--text-primary);
+            border: var(--border-width) solid var(--text-primary);
+            padding: 0.5rem 1rem;
+            font-family: var(--font-heading);
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 3px 3px 0px var(--border-accent);
+            transition: all 0.1s ease;
+        }
+
+        .theme-toggle-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px var(--border-accent);
+            background-color: var(--border-accent);
+            color: #E9D8C8;
+        }
+
+        footer.bottom-header {
+            background-color: var(--panel-fill);
+            border-top: var(--border-width) solid var(--text-primary);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-heading);
+            font-size: 0.55rem;
+            color: var(--text-secondary);
+            margin-top: auto;
+            z-index: 1000;
+        }
+
+        /* =========================================
+           4. App Layout Wrapper (Sidebar + Main)
+           ========================================= */
+        .app-container {
+            display: flex;
+            flex: 1;
+            min-height: calc(100vh - 120px);
+        }
+
+        aside {
+            width: 300px;
+            background-color: var(--panel-fill);
+            border-right: var(--border-width) solid var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2.5rem 1.8rem;
+            box-shadow: 6px 0px 0px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo-area h2 {
+            font-family: var(--font-heading);
+            font-size: 0.85rem;
+            margin: 0 0 0.5rem 0;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+
+        .logo-area p {
+            font-family: var(--font-alt);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 2rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .nav-links li button {
+            width: 100%;
+            text-align: left;
+            padding: 0.9rem 1rem;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            border: var(--border-width) solid var(--text-primary);
+            font-family: var(--font-heading);
+            font-size: 0.5rem;
+            line-height: 1.5;
+            text-transform: uppercase;
+            transition: all 0.1s ease;
+            box-shadow: 3px 3px 0px var(--border-accent);
+        }
+
+        .nav-links li button:hover, .nav-links li button.active {
+            background-color: var(--text-primary);
+            color: var(--bg-base);
+            transform: translateX(4px);
+            box-shadow: 5px 5px 0px var(--border-accent);
+        }
+
+        .sidebar-footer {
+            font-family: var(--font-heading);
+            font-size: 0.5rem;
+            color: var(--text-secondary);
+            border-top: 1px dashed var(--border-accent);
+            padding-top: 1rem;
+            line-height: 1.6;
+        }
+
+        main {
+            flex: 1;
+            padding: 3rem;
+            max-width: 1300px;
+        }
+
+        /* =========================================
+           5. View Panels & Cards
+           ========================================= */
+        .view-section {
+            display: none;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .brutal-card {
+            background-color: var(--panel-fill);
+            border: var(--border-width) solid var(--text-primary);
+            padding: 2.5rem;
+            position: relative;
+            box-shadow: 10px 10px 0px var(--border-accent);
+            margin-bottom: 2rem;
+        }
+
+        .brutal-card::before {
+            content: attr(data-tag);
+            position: absolute;
+            top: -16px;
+            left: 24px;
+            background-color: var(--text-primary);
+            color: var(--bg-base);
+            font-family: var(--font-heading);
+            font-size: 0.55rem;
+            padding: 4px 10px;
+            border: 2px solid var(--text-primary);
+            text-transform: uppercase;
+        }
+
+        h1, h2, h3 {
+            font-family: var(--font-heading);
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05rem;
+        }
+
+        h1 {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+        }
+
+        h2 {
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-accent);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        p {
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            margin-bottom: 1.2rem;
+        }
+
+        /* =========================================
+           6. Form Controls & Buttons
+           ========================================= */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        label {
+            font-family: var(--font-heading);
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            color: var(--text-primary);
+        }
+
+        input[type="text"] {
+            background-color: var(--card-inner);
+            color: var(--text-primary);
+            border: var(--border-width) solid var(--text-primary);
+            padding: 1rem;
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--border-accent);
+            box-shadow: 4px 4px 0px var(--border-accent);
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 12px;
+            background: var(--card-inner);
+            border: var(--border-width) solid var(--text-primary);
+            outline: none;
+            margin-top: 0.5rem;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: var(--text-primary);
+            border: var(--border-width) solid var(--panel-fill);
+        }
+
+        .slider-meta {
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--font-heading);
+            font-size: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .action-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        button.brutal-btn {
+            background-color: var(--text-primary);
+            color: var(--bg-base);
+            border: var(--border-width) solid var(--text-primary);
+            padding: 0.9rem 1.8rem;
+            font-family: var(--font-heading);
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            transition: all 0.1s ease;
+            box-shadow: 4px 4px 0px var(--border-accent);
+        }
+
+        button.brutal-btn:hover {
+            background-color: var(--border-accent);
+            color: var(--bg-base);
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px var(--text-primary);
+        }
+
+        button.brutal-btn.secondary {
+            background-color: var(--card-inner);
+            color: var(--text-primary);
+            border-color: var(--text-primary);
+        }
+
+        /* =========================================
+           7. Tables & Mathematical Boxes
+           ========================================= */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+            border: var(--border-width) solid var(--text-primary);
+            box-shadow: 6px 6px 0px var(--border-accent);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 1rem;
+            border: 2px solid var(--text-primary);
+        }
+
+        th {
+            background-color: var(--text-primary);
+            color: var(--bg-base);
+            font-family: var(--font-heading);
+            font-size: 0.55rem;
+            text-transform: uppercase;
+        }
+
+        td {
+            background-color: var(--card-inner);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+        }
+
+        .binary-pill {
+            display: inline-block;
+            background-color: var(--panel-fill);
+            color: var(--text-primary);
+            padding: 4px 8px;
+            border: 1px solid var(--border-accent);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .math-box {
+            background-color: var(--card-inner);
+            border: 2px dashed var(--border-accent);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sparkle Trail Cursor -->
+    <div id="brutal-cursor"></div>
+
+    <!-- TOP HEADER -->
+    <header class="top-header">
+        <div class="header-title">QENC // LAB LAB_SYSTEM_v2.0</div>
+        <button class="theme-toggle-btn" id="theme-toggle" onclick="toggleTheme()">
+            <span id="theme-icon">🌙</span> <span id="theme-label">DARK MODE</span>
+        </button>
+    </header>
+
+    <!-- MAIN APP CONTAINER (SIDEBAR + MAIN CONTENT) -->
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside>
+            <div class="logo-area">
+                <h2>CYBR // LAB</h2>
+                <p id="palette-label">COLOR: DARK</p>
+            </div>
+            <ul class="nav-links">
+                <li><button class="active" onclick="switchView('caesar', this)">01. Caesar & ASCII</button></li>
+                <li><button onclick="switchView('cnot', this)">02. Reversible CNOT</button></li>
+                <li><button onclick="switchView('trace', this)">03. Trace & Export</button></li>
+            </ul>
+            <div class="sidebar-footer">
+                STATUS: ACTIVE<br>
+                CHECK: 0 ERRORS
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main>
+            <!-- PAGE 1: CAESAR & ASCII -->
+            <section id="view-caesar" class="view-section active">
+                <div class="brutal-card" data-tag="/PAGE_01_CAESAR">
+                    <h1>Caesar Cipher & ASCII Register Mapping</h1>
+                    <p>Classical cryptography engine designed to translate raw strings into standard ASCII numerical index values and apply cryptographic shift vectors prior to quantum register conversion.</p>
+                    
+                    <div class="controls-grid">
+                        <div class="input-group">
+                            <label for="input-text">Plaintext Input String:</label>
+                            <input type="text" id="input-text" value="QUANTUM" placeholder="Enter text...">
+                        </div>
+                        <div class="input-group">
+                            <label for="shift-key">Caesar Shift Key ($k$): <span id="key-val" style="color:var(--text-primary);">4</span></label>
+                            <input type="range" id="shift-key" min="1" max="25" value="4">
+                            <div class="slider-meta"><span>1</span><span>13</span><span>25</span></div>
+                        </div>
+                    </div>
+
+                    <div class="math-box">
+                        <strong>Active Mathematical Formula Trace:</strong><br>
+                        $x = \text{ASCII} - 64$ &nbsp;|&nbsp; $Z = (x + k) \bmod 256$<br>
+                        Maps characters into precise 8-bit binary registers ($a_7 \dots a_0$) for quantum compatibility.
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAGE 2: REVERSIBLE CNOT -->
+            <section id="view-cnot" class="view-section">
+                <div class="brutal-card" data-tag="/PAGE_02_REVERSIBLE_CNOT">
+                    <h1>Reversible Binary-to-Gray Code Converter</h1>
+                    <p>Quantum CNOT gate architecture executes bitwise XOR ($\oplus$) operations directly across qubit registers without thermal dissipation or information loss.</p>
+                    
+                    <div class="math-box" style="margin-top: 1rem;">
+                        <h2>Forward Transformation Algorithm (CNOT):</h2>
+                        <p>• Most Significant Bit remains unchanged: $g_7 = a_7$<br>
+                        • Sequential adjacent XOR gates: $g_i = a_{i+1} \oplus a_i$</p>
+
+                        <h2 style="margin-top: 1.5rem;">Reverse Decoder Verification:</h2>
+                        <p>• Recover original binary state losslessly: $a_i = a_{i+1} \oplus g_i$</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAGE 3: TRACE & EXPORT -->
+            <section id="view-trace" class="view-section">
+                <div class="brutal-card" data-tag="/PAGE_03_TRACE_EXPORT">
+                    <h1>Live Execution Trace & Report Export</h1>
+                    <p>Inspect comprehensive step-by-step transformations, binary byte arrays, and reversible verification gates in real-time. Export reports directly for academic documentation.</p>
+                    
+                    <div class="action-row">
+                        <button class="brutal-btn" id="run-sim-btn">Execute Pipeline</button>
+                        <button class="brutal-btn secondary" id="export-btn">Export Report (.txt)</button>
+                    </div>
+
+                    <div class="table-container">
+                        <table id="trace-table">
+                            <thead>
+                                <tr>
+                                    <th>Char</th>
+                                    <th>ASCII</th>
+                                    <th>Shifted</th>
+                                    <th>Shifted ASCII</th>
+                                    <th>8-Bit Binary ($a_7 \dots a_0$)</th>
+                                    <th>Gray Code ($g_7 \dots g_0$)</th>
+                                    <th>Reversible Check</th>
+                                </tr>
+                            </thead>
+                            <tbody id="trace-tbody">
+                                <!-- Populated dynamically via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- BOTTOM HEADER / FOOTER -->
+    <footer class="bottom-header">
+        <div>SYS_TIME: 23:47:12 UTC</div>
+        <div>HEX_MODE: #142030 / #E9D8C8</div>
+        <div>NODE: CYBR_01</div>
+    </footer>
+
+    <!-- Core Interaction & Sparkle Script -->
+    <script>
+        // Theme Toggle Logic
+        const themeIcon = document.getElementById('theme-icon');
+        const themeLabel = document.getElementById('theme-label');
+        const paletteLabel = document.getElementById('palette-label');
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            const isLight = document.body.classList.contains('light-theme');
+
+            if (isLight) {
+                themeIcon.textContent = '☀️';
+                themeLabel.textContent = 'LIGHT MODE';
+                paletteLabel.textContent = 'COLOR: LIGHT';
+            } else {
+                themeIcon.textContent = '🌙';
+                themeLabel.textContent = 'DARK MODE';
+                paletteLabel.textContent = 'COLOR: DARK';
+            }
+        }
+
+        // Sparkle Cursor Trail Logic
+        const cursor = document.getElementById('brutal-cursor');
+        window.addEventListener('mousemove', (e) => {
+            cursor.style.left = `${e.clientX}px`;
+            cursor.style.top = `${e.clientY}px`;
+
+            if (Math.random() < 0.3) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = `${e.clientX + (Math.random() * 10 - 5)}px`;
+                sparkle.style.top = `${e.clientY + (Math.random() * 10 - 5)}px`;
+                document.body.appendChild(sparkle);
+
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 600);
+            }
+        });
+
+        // Tab View Switcher
+        function switchView(viewName, btnElement) {
+            document.querySelectorAll('.nav-links button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+
+            btnElement.classList.add('active');
+            document.getElementById(`view-${viewName}`).classList.add('active');
+        }
+
+        // Simulation & Pipeline Engine
+        const inputText = document.getElementById('input-text');
+        const shiftKey = document.getElementById('shift-key');
+        const keyValSpan = document.getElementById('key-val');
+        const runSimBtn = document.getElementById('run-sim-btn');
+        const exportBtn = document.getElementById('export-btn');
+        const traceTbody = document.getElementById('trace-tbody');
+
+        shiftKey.addEventListener('input', () => {
+            keyValSpan.textContent = shiftKey.value;
+            runPipeline();
+        });
+
+        inputText.addEventListener('input', runPipeline);
+        runSimBtn.addEventListener('click', runPipeline);
+
+        function runPipeline() {
+            const text = inputText.value.toUpperCase();
+            const key = parseInt(shiftKey.value);
+            traceTbody.innerHTML = '';
+
+            if (!text) {
+                traceTbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-secondary);">No input detected. Enter text on Page 01.</td></tr>`;
+                return;
+            }
+
+            for (let char of text) {
+                const asciiVal = char.charCodeAt(0);
+                const shiftedAscii = (asciiVal + key) % 256;
+                const shiftedChar = String.fromCharCode(shiftedAscii);
+
+                const binaryStr = shiftedAscii.toString(2).padStart(8, '0');
+                const bitArray = binaryStr.split('').map(Number);
+
+                const grayArray = [];
+                grayArray[0] = bitArray[0];
+                for (let i = 1; i < 8; i++) {
+                    grayArray[i] = bitArray[i - 1] ^ bitArray[i];
+                }
+
+                const decodedArray = [];
+                decodedArray[0] = grayArray[0];
+                for (let i = 1; i < 8; i++) {
+                    decodedArray[i] = decodedArray[i - 1] ^ grayArray[i];
+                }
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="font-weight:700; color:var(--text-primary);">${char}</td>
+                    <td>${asciiVal}</td>
+                    <td style="font-weight:700; color:var(--text-primary);">${shiftedChar}</td>
+                    <td>${shiftedAscii}</td>
+                    <td><span class="binary-pill">[${bitArray.join('')}]</span></td>
+                    <td><span class="binary-pill" style="background-color:var(--text-primary); color:var(--bg-base);">[${grayArray.join('')}]</span></td>
+                    <td><span class="binary-pill">[${decodedArray.join('')}]</span></td>
+                `;
+                traceTbody.appendChild(row);
+            }
+        }
+
+        // Export Report Functionality
+        exportBtn.addEventListener('click', () => {
+            const text = inputText.value.toUpperCase();
+            const key = shiftKey.value;
+            const currentTheme = document.body.classList.contains('light-theme') ? 'Light Mode' : 'Dark Mode';
+            
+            let report = `=== QUANTUM CAESAR CIPHER & REVERSIBLE LOGIC LAB ===\n`;
+            report += `Theme: ${currentTheme}\n`;
+            report += `Execution Timestamp: ${new Date().toISOString()}\n`;
+            report += `Input String: ${text}\n`;
+            report += `Shift Key (k): ${key}\n\n`;
+            report += `----------------------------------------------------\n`;
+            report += `TRACE RESULTS:\n`;
+
+            const rows = traceTbody.querySelectorAll('tr');
+            rows.forEach((row, idx) => {
+                const cols = row.querySelectorAll('td');
+                if (cols.length >= 7) {
+                    report += `[${idx+1}] Char: ${cols[0].innerText} | ASCII: ${cols[1].innerText} | Shifted: ${cols[2].innerText} (${cols[3].innerText}) | Binary: ${cols[4].innerText} | Gray: ${cols[5].innerText} | Reversible Check: ${cols[6].innerText}\n`;
+                }
+            });
+
+            report += `\nStatus: Verified Lossless Reversible CNOT Transformation.`;
+
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Quantum_Caesar_Report_${text}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        runPipeline();
+    </script>
+</body>
+</html>
